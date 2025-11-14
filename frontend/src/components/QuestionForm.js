@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import API_URL from '../config'; // ADD THIS LINE
 
 export default function QuestionForm({ token, subject, onSaved, onCheck }){
   const [questionText, setQuestionText] = useState('');
@@ -24,7 +25,8 @@ export default function QuestionForm({ token, subject, onSaved, onCheck }){
     }
 
     try{
-      const res = await axios.post('http://localhost:5000/api/questions/submit', 
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.post(`${API_URL}/api/questions/submit`, 
         { questionText, marks: Number(marks), co, k, module, subject },
         { headers: { Authorization: 'Bearer '+token }}
       );

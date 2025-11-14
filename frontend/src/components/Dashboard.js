@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import QuestionForm from './QuestionForm';
+import API_URL from '../config'; // ADD THIS LINE
 
 export default function Dashboard({ token, user, onLogout }){
   const [myQuestions, setMyQuestions] = useState([]);
@@ -8,7 +9,7 @@ export default function Dashboard({ token, user, onLogout }){
   const [currentSubject, setCurrentSubject] = useState('');
   const [subjects, setSubjects] = useState([]);
   const [showSubjectModal, setShowSubjectModal] = useState(false);
-  const [generationType, setGenerationType] = useState(''); // 'combined' or 'individual'
+  const [generationType, setGenerationType] = useState('');
 
   useEffect(()=> {
     if (currentSubject) {
@@ -20,7 +21,8 @@ export default function Dashboard({ token, user, onLogout }){
 
   async function fetchSubjects() {
     try {
-      const res = await axios.get('http://localhost:5000/api/questions/subjects', { 
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.get(`${API_URL}/api/questions/subjects`, { 
         headers: { Authorization: 'Bearer '+token }
       });
       setSubjects(res.data.subjects || []);
@@ -32,7 +34,8 @@ export default function Dashboard({ token, user, onLogout }){
   async function fetchMy(){
     if (!currentSubject) return;
     try{
-      const res = await axios.get(`http://localhost:5000/api/questions/my?subject=${currentSubject}`, { 
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.get(`${API_URL}/api/questions/my?subject=${currentSubject}`, { 
         headers: { Authorization: 'Bearer '+token }
       });
       setMyQuestions(res.data);
@@ -42,7 +45,8 @@ export default function Dashboard({ token, user, onLogout }){
   async function checkCan(){
     if (!currentSubject) return;
     try{
-      const res = await axios.get(`http://localhost:5000/api/paper/can-generate?subject=${currentSubject}`, { 
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.get(`${API_URL}/api/paper/can-generate?subject=${currentSubject}`, { 
         headers: { Authorization: 'Bearer '+token }
       });
       setCanGenerate(res.data.canGenerate);
@@ -57,8 +61,8 @@ export default function Dashboard({ token, user, onLogout }){
   async function generatePaper(selectedSubject) {
     try{
       const endpoint = generationType === 'individual' 
-        ? 'http://localhost:5000/api/individual-paper/generate-individual-paper'
-        : 'http://localhost:5000/api/paper/generate';
+        ? `${API_URL}/api/individual-paper/generate-individual-paper` // CHANGE
+        : `${API_URL}/api/paper/generate`; // CHANGE
       
       const win = window.open('about:blank','_blank');
       const res = await axios.get(`${endpoint}?subject=${selectedSubject}`, { 
@@ -83,7 +87,6 @@ export default function Dashboard({ token, user, onLogout }){
 
       <hr />
       
-      {/* Subject Selection */}
       <div className="mb-4">
         <h5>Select Subject</h5>
         <div className="d-flex gap-2 align-items-center">
@@ -146,7 +149,6 @@ export default function Dashboard({ token, user, onLogout }){
         </>
       )}
 
-      {/* Subject Selection Modal for Paper Generation */}
       {showSubjectModal && (
         <div style={{
           position: 'fixed',

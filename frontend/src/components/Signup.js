@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import API_URL from '../config'; // ADD THIS LINE
 
 export default function Signup(){
   const [teacherID, setTeacherID] = useState('');
@@ -10,7 +11,8 @@ export default function Signup(){
   const submit = async (e) => {
     e.preventDefault();
     try{
-      const res = await axios.post('http://localhost:5000/api/auth/signup', { teacherID, name, password });
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.post(`${API_URL}/api/auth/signup`, { teacherID, name, password });
       setMsg(res.data.message || 'Created');
     }catch(err){
       setMsg(err.response?.data?.message || 'Error');

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import API_URL from '../config'; // ADD THIS LINE
 
 export default function Login({ onLogin }){
   const [teacherID, setTeacherID] = useState('');
@@ -9,7 +10,8 @@ export default function Login({ onLogin }){
   const submit = async (e) => {
     e.preventDefault();
     try{
-      const res = await axios.post('http://localhost:5000/api/auth/login', { teacherID, password });
+      // CHANGE: Replace 'http://localhost:5000' with API_URL
+      const res = await axios.post(`${API_URL}/api/auth/login`, { teacherID, password });
       onLogin(res.data.token, { teacherID: res.data.teacherID, name: res.data.name });
     }catch(err){
       setMsg(err.response?.data?.message || 'Error');
