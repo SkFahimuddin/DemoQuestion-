@@ -12,7 +12,7 @@ const app = express();
 
 // UPDATED CORS - Allow all origins for now (we'll restrict after deployment)
 app.use(cors({
-     origin: ['https://demo-question-ddz9.vercel.app/'], // Your actual frontend URL
+     origin: ['https://demo-question-h6el.vercel.app'], // Your actual frontend URL
      credentials: true
    }));
 
