@@ -12,9 +12,9 @@ const app = express();
 
 // UPDATED CORS - Allow all origins for now (we'll restrict after deployment)
 app.use(cors({
-  origin: '*', // In production, replace with your Vercel URL
-  credentials: true
-}));
+     origin: ['https://demo-question-ddz9.vercel.app/'], // Your actual frontend URL
+     credentials: true
+   }));
 
 app.use(express.json());
 
