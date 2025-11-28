@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -10,26 +9,16 @@ const individualPaperRoutes = require('./routes/individualPaperRoutes');
 
 const app = express();
 
-// CORS configuration
-// CORS configuration - MUST be before any routes
+// CORS configuration - Allow all origins (needed for Vercel preview deployments)
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://demo-question-ui2h.vercel.app',
-    'http://localhost:3000'
-  ];
-  
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(204).end();
   }
   
   next();
@@ -37,13 +26,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.use(express.json());
-
 // MongoDB connection with caching for serverless
 let cachedDb = null;
 
 async function connectToDatabase() {
-  if (cachedDb) {
+  if (cachedDb && mongoose.connection.readyState === 1) {
     return cachedDb;
   }
 
